@@ -1,5 +1,5 @@
 /**
- * @detox-config-path ./e2e/detox-multiapps.config.json
+ * @detox-config-path ./detox-multiapps.config.json
  */
 
 const _ = require('lodash');

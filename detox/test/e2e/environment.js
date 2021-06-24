@@ -6,9 +6,7 @@ class CustomDetoxEnvironment extends DetoxCircusEnvironment {
   constructor(config, context) {
     super(config, context);
 
-    if (context.docblockPragmas['detox-config-path']) {
-      process.env.DETOX_CONFIG_PATH = context.docblockPragmas['detox-config-path'];
-    }
+    this._detoxConfigOverride = context.docblockPragmas['detox-config-path'];
 
     this.registerListeners({
       SpecReporterCircus,
@@ -17,7 +15,13 @@ class CustomDetoxEnvironment extends DetoxCircusEnvironment {
   }
 
   async initDetox() {
-    const instance = await super.initDetox();
+    let overrides;
+
+    if (this._detoxConfigOverride) {
+      overrides = require(this._detoxConfigOverride);
+    }
+
+    const instance = await this.detox.init(overrides);
 
     this.global.detox.__waitUntilArtifactsManagerIsIdle__ = () => {
       return instance._artifactsManager._idlePromise;
